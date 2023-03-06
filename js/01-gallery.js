@@ -29,21 +29,29 @@ function creatGalleryCards(image) {
 let instance;
 
 function openModalClick(event) {
-  window.addEventListener('keydown', closeModalEsc);
   event.preventDefault();
   if (!event.target.classList.contains('gallery__image')) {
     return;
   }
-  instance = basicLightbox.create(`
+  instance = basicLightbox.create(
+    `
     <img src="${event.target.dataset.source}" width="800" height="600">
-`);
+`,
+    {
+      onShow: instance => {
+        window.addEventListener('keydown', closeModalEsc);
+      },
+      onClose: instance => {
+        window.removeEventListener('keydown', closeModalEsc);
+      },
+    }
+  );
 
   instance.show();
 }
 
 function closeModalEsc(event) {
   if (event.code === 'Escape') {
-    window.removeEventListener('keydown', closeModalEsc);
     instance.close();
   }
 }
